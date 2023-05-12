@@ -1,0 +1,85 @@
+<%- include('partials/head', {title: 'Dashboard'}) %>
+
+<body class="bg-gray-100">
+  <div class="flex flex-col h-screen">
+    <nav class="bg-white border-b-2 border-gray-200 px-4 py-2">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <img
+            class="h-8 w-auto"
+            src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+            alt="Workflow"
+          />
+          <span class="ml-2 font-semibold text-gray-700 text-lg"
+            >Dashboard</span
+          >
+        </div>
+        <div class="flex items-center">
+          <span class="mr-2 font-semibold text-gray-700 text-lg">
+            <%= user ? user.email : 'User' %>
+          </span>
+          <form action="/auth/logout" method="POST">
+            <button
+              type="submit"
+              onclick="event.preventDefault(); logout()"
+              class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+            >
+              Sign Out
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <main class="flex-grow p-6">
+      <h1 class="text-3xl font-semibold text-gray-900 mb-4">
+        Welcome to the Dashboard
+      </h1>
+      <p class="text-lg text-gray-700 mb-4">You are now authenticated!</p>
+      <a
+        href="/secret"
+        class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+      >
+        Secret Page
+      </a>
+      <button
+        onclick="event.preventDefault(); blacklistToken()"
+        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+      >
+        Blacklist Current Token
+      </button>
+    </main>
+    <script>
+      async function logout() {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await fetch('/auth/logout', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
+        });
+        if (response.status === 204) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          window.location.href = '/';
+        }
+      }
+
+      async function blacklistToken() {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await fetch('/blacklist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
+        });
+        if (response.status === 200) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          window.location.href = '/';
+        }
+      }
+    </script>
+  </div>
+</body>

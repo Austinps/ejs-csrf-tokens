@@ -1,0 +1,27 @@
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+  <form onsubmit="logout(); return false;">
+    <button
+      type="submit"
+      class="text-indigo-600 hover:text-indigo-500 font-semibold"
+    >
+      Logout
+    </button>
+  </form>
+  <script>
+    async function logout() {
+      const refreshToken = localStorage.getItem('refreshToken');
+      const response = await fetch('/auth/logout', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (response.status === 204) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/';
+      }
+    }
+  </script>
+</div>
