@@ -1,5 +1,5 @@
 {
-  "name": "ejs-tokens",
+  "name": "ejs-csrf-tokens",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
